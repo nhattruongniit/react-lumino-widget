@@ -1,23 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Lumino from "./features/widgets/Lumino";
+import { useAppDispatch } from "./app/store";
+import {
+  addIncrementor,
+  addDecrementor,
+  addWatcher,
+} from "./features/widgets/widgetsSlice";
+
+import "./App.css";
 
 function App() {
+  const dispatch = useAppDispatch();
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={() => dispatch(addIncrementor())}>
+        Add Incrementor!
+      </button>
+      <button onClick={() => dispatch(addDecrementor())}>
+        Add Decrementor!
+      </button>
+      <button onClick={() => dispatch(addWatcher())}>Add Watcher!</button>
+      <Lumino />
     </div>
   );
 }

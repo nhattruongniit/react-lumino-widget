@@ -1,70 +1,24 @@
-# Getting Started with Create React App
+# Lumino Widgets + React/Redux
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![demo animation](./demo.gif)
 
-## Available Scripts
+This project is an example on how to use `@lumino/widgets` in a React application. Inspired by [vue-lumino](https://github.com/tupilabs/vue-lumino).
 
-In the project directory, you can run:
+The goal was to have a window management similar to VSCode's, but keep access to Redux State and add new windows via Redux actions. In order to realise this we have keep in mind, that `lumino` (formerly `phosphorjs`) manages the windows outside of React.
 
-### `npm start`
+All the magic happens in `Lumino.tsx` & `widgetsSlice.ts`.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Steps to reproduce:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Decide what will be a widget in your app, define props for these widgets
+  - In my case its `{id: string, name: string}`, where the ID is used to add/remove a specific widget and the name will be displayed in the tab.
+- Define a redux state for the widgets
+  - I wrote my Redux widget handling in `widgetsSlice.ts` using the modern `@redux/toolkit` which I love. Each supported widget has its own type that will be used for telling lumino which React component to render.
+- Inherit from luminos `Widget` class
+  - We use our custom class to handle communication between lumino and React through custom events.
+- Initialize luminos `Boxpanel` and `DockPanel` during the first render in a `useEffect` hook. Attach callbacks to the elements custom events to communicate our custom widgets events back to react.
+- Watch the redux widgetstate and add a new widget to the `DockPanel` when a new widget appears in the state.
 
-### `npm test`
+## Styling
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+To my opinion custom styling is a rather difficult process when using lumino. But with your browsers DevTools it should be okay. For this demo I replaced the close icon with an "X" and changed the window overlay preview to be blue. Change them add your styles in `Lumino.css`.
