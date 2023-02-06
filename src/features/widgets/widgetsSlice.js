@@ -6,6 +6,7 @@ import { nanoid, createSlice } from "@reduxjs/toolkit";
 const initialState = {
   widgets: [
     { type: "WATCHER", id: nanoid(), tabTitle: "Watcher", active: true },
+    { type: "INCREMENTOR", id: nanoid(), tabTitle: "Incremenetor", active: true },
   ],
 };
 

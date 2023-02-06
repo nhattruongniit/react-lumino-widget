@@ -110,6 +110,8 @@ const Lumino = () => {
   const [renderedWidgetIds, setRenderedWidgetIds] = useState([]); // tracker of components that have been rendered with LuminoWidget already
   const widgets = useSelector(selectWidgets); // widgetsState
   const dispatch = useAppDispatch();
+  
+  console.log('widgets: ', widgets)
 
   /**
    * creates a LuminoWidget and adds it to the DockPanel. Id of widget is added to renderedWidgets

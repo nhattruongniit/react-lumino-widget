@@ -1,11 +1,14 @@
 import React from "react";
-import Lumino from "./features/widgets/Lumino";
 import { useAppDispatch } from "./app/store";
 import {
   addIncrementor,
   addDecrementor,
   addWatcher,
 } from "./features/widgets/widgetsSlice";
+
+// widgets
+import Lumino from "./features/widgets/Lumino";
+import MenuBar from "./features/widgets/MenuBar";
 
 import "./App.css";
 
@@ -20,6 +23,8 @@ function App() {
         Add Decrementor!
       </button>
       <button onClick={() => dispatch(addWatcher())}>Add Watcher!</button>
+
+      <MenuBar />
       <Lumino />
     </div>
   );
