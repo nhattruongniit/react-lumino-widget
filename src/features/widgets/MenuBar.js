@@ -34,7 +34,6 @@ function createMenu() {
   root.addItem({ type: 'separator' });
   root.addItem({ command: 'example:open-task-manager' });
   root.addItem({ type: 'separator' });
-  root.addItem({ type: 'separator' });
   root.addItem({ command: 'example:close' });
 
   return root;
