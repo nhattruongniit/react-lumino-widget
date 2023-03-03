@@ -9,6 +9,7 @@ import {
 // widgets
 import Lumino from "./features/widgets/Lumino";
 import MenuBar from "./features/widgets/MenuBar";
+import LuminoTony from "./features/LuminoTony";
 
 import "./App.css";
 
@@ -24,8 +25,9 @@ function App() {
       </button>
       <button onClick={() => dispatch(addWatcher())}>Add Watcher!</button>
 
-      <MenuBar />
+      {/* <MenuBar /> */}
       <Lumino />
+      {/* <LuminoTony /> */}
     </div>
   );
 }

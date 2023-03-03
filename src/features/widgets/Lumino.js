@@ -108,6 +108,7 @@ const Lumino = () => {
   const [attached, setAttached] = useState(false); // avoid attaching DockPanel and BoxPanel twice
   const mainRef = useRef(null); // reference for Element holding our Widgets
   const [renderedWidgetIds, setRenderedWidgetIds] = useState([]); // tracker of components that have been rendered with LuminoWidget already
+  const [layouts, setLayouts] = useState([]);
   const widgets = useSelector(selectWidgets); // widgetsState
   const dispatch = useAppDispatch();
   
@@ -174,8 +175,35 @@ const Lumino = () => {
       dispatch(deleteWidget(le.detail.id));
     });
   }, [mainRef, attached, dispatch]);
+  
+  function handleSaveLayout() {
+    // const layouts = savedLayouts.push(dock.saveLayout());
+    setLayouts(prevState => [...prevState, dock.saveLayout()]);
+  }
 
-  return <div ref={mainRef} className={"main"} />;
+  const restoreLayout = index => () => {
+    dock.restoreLayout(layouts[index]);
+  }
+
+  console.log("savedLayouts: ", layouts)
+
+  return (
+    <>
+      <button type="button" onClick={handleSaveLayout}>Save layout</button>
+      <br />
+      <h3>Layouts</h3>
+      <ul>
+        {layouts.map((layout, index) => {
+          return (
+            <li style={{ cursor: 'pointer' }} onClick={restoreLayout(index)}>Layout {index}</li>
+          )
+        })}
+      </ul>
+
+      <div ref={mainRef} className={"main"} />
+
+    </>
+  );
 };
 
 export default Lumino;
