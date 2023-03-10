@@ -193,7 +193,7 @@ const Lumino = () => {
       <br />
       <h3>Layouts</h3>
       <ul>
-        {layouts.map((layout, index) => {
+        {layouts.map((_, index) => {
           return (
             <li style={{ cursor: 'pointer' }} onClick={restoreLayout(index)}>Layout {index}</li>
           )
