@@ -15,6 +15,8 @@ import "./App.css";
 
 function App() {
   const dispatch = useAppDispatch();
+
+  console.log('trruong')
   return (
     <div className="App">
       <button onClick={() => dispatch(addIncrementor())}>
