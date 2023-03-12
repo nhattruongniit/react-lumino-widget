@@ -16,7 +16,7 @@ import "./App.css";
 function App() {
   const dispatch = useAppDispatch();
 
-  console.log('trruong')
+  console.log('giflow')
   return (
     <div className="App">
       <button onClick={() => dispatch(addIncrementor())}>
@@ -35,3 +35,8 @@ function App() {
 }
 
 export default App;
+
+
+/*
+khi develop code xong -> qc test -> dua code len production
+*/
