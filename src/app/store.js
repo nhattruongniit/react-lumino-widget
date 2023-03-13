@@ -9,7 +9,7 @@ export const store = configureStore({
     counter: counterReducer,
     widgets: widgetsReducer,
   },
-  middleware: [logger],
+  // middleware: [logger],
 });
 
 export const useAppDispatch = () => useDispatch();

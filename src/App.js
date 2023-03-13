@@ -12,6 +12,8 @@ import MenuBar from "./features/widgets/MenuBar";
 import LuminoTony from "./features/LuminoTony";
 
 import "./App.css";
+import Tabs from "./features/widgets/Tabs";
+import CenterBox from "./features/widgets/CenterBox";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -28,7 +30,12 @@ function App() {
       <button onClick={() => dispatch(addWatcher())}>Add Watcher!</button>
 
       {/* <MenuBar /> */}
-      <Lumino />
+
+      <Tabs />
+
+      <CenterBox />
+
+      {/* <Lumino /> */}
       {/* <LuminoTony /> */}
     </div>
   );

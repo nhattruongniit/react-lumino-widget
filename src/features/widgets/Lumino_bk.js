@@ -7,7 +7,6 @@ import {
   selectWidgets,
   deleteWidget,
   activateWidget,
-  handleUpdateLayout
 } from "./widgetsSlice";
 import Watcher from "../counter/Watcher";
 import Incrementor from "../counter/Incrementor";
@@ -97,18 +96,21 @@ const getComponent = (type) => {
 };
 
 /**
+ * Initialize Boxpanel and Dockpanel globally once to handle future calls
+ */
+const main = new BoxPanel({ direction: "left-to-right", spacing: 0 });
+const dock = new DockPanel();
+
+/**
  * This component watches the widgets redux state and draws them
  */
-
-let renderedWidgetIdsRef = {}
-
-const Lumino = ({ widgets, activeTab, layout, main, dock }) => {
+const Lumino = () => {
   const [attached, setAttached] = useState(false); // avoid attaching DockPanel and BoxPanel twice
   const mainRef = useRef(null); // reference for Element holding our Widgets
   const [renderedWidgetIds, setRenderedWidgetIds] = useState([]); // tracker of components that have been rendered with LuminoWidget already
-  // const widgets = useSelector(selectWidgets); // widgetsState
+  const [layouts, setLayouts] = useState([]);
+  const widgets = useSelector(selectWidgets); // widgetsState
   const dispatch = useAppDispatch();
-  const model = layout[activeTab];
   
   /**
    * creates a LuminoWidget and adds it to the DockPanel. Id of widget is added to renderedWidgets
@@ -116,13 +118,6 @@ const Lumino = ({ widgets, activeTab, layout, main, dock }) => {
   const addWidget = useCallback((w) => {
     if (mainRef.current === null) return;
     setRenderedWidgetIds((cur) => [...cur, w.id]);
-    renderedWidgetIdsRef = {
-      ...renderedWidgetIdsRef,
-      [activeTab]: {
-        ...renderedWidgetIdsRef[activeTab],
-        [w.id]: true
-      }
-    }
     const lum = new LuminoWidget(w.id, w.tabTitle, mainRef.current, true);
     dock.addWidget(lum);
   }, []);
@@ -134,10 +129,8 @@ const Lumino = ({ widgets, activeTab, layout, main, dock }) => {
    */
   useEffect(() => {
     if (!attached) return;
-
     widgets.forEach((w) => {
       if (renderedWidgetIds.includes(w.id)) return; // avoid drawing widgets twice
-
       addWidget(w); // addWidget to DOM
       const el = document.getElementById(w.id); // get DIV
       const Component = getComponent(w.type); // get Component for TYPE
@@ -145,13 +138,13 @@ const Lumino = ({ widgets, activeTab, layout, main, dock }) => {
         ReactDOM.render(
           // draw Component into Lumino DIV
           <Provider store={store}>
-              <Component id={w.id} name={w.tabTitle}  />
+            <Component id={w.id} name={w.tabTitle} />
           </Provider>,
           el
         );
       }
     });
-  }, [widgets, attached, addWidget, renderedWidgetIds, layout, activeTab]);
+  }, [widgets, attached, addWidget, renderedWidgetIds]);
 
   /**
    * This effect initializes the BoxPanel and the Dockpanel and adds event listeners
@@ -170,16 +163,9 @@ const Lumino = ({ widgets, activeTab, layout, main, dock }) => {
     setAttached(true);
     main.addWidget(dock);
     // dispatch activated action
-    mainRef.current.addEventListener("lumino:activated", () => {
-      // const le = new LuminoWidget().getEventDetails();
-      // dispatch(activateWidget(le.detail.id));
-      // const layout = dock.saveLayout();
-      // console.log('lumino:activated: ', layout)
-      // if(!layout.main) return;
-      // dispatch(handleUpdateLayout({
-      //   layout: layout,
-      //   tabId: activeTab
-      // }))
+    mainRef.current.addEventListener("lumino:activated", (e) => {
+      const le = new LuminoWidget().getEventDetails();
+      dispatch(activateWidget(le.detail.id));
     });
     // dispatch deleted action
     mainRef.current.addEventListener("lumino:deleted", (e) => {
@@ -188,34 +174,28 @@ const Lumino = ({ widgets, activeTab, layout, main, dock }) => {
     });
   }, [mainRef, attached, dispatch]);
   
-
-  const restoreLayout = mainLayout => () => {
-    console.log('mainLayout: ', mainLayout)
-    if(!mainLayout?.main) return;
-    dock.restoreLayout(mainLayout);
-  }
-
   function handleSaveLayout() {
-    const layout = dock.saveLayout();
-    console.log('layout: ', layout)
-    if(!layout.main) return;
-    dispatch(handleUpdateLayout({
-      layout: layout,
-      tabId: activeTab
-    }))
+    // const layouts = savedLayouts.push(dock.saveLayout());
+    setLayouts(prevState => [...prevState, dock.saveLayout()]);
   }
+
+  const restoreLayout = index => () => {
+    dock.restoreLayout(layouts[index]);
+  }
+
+  console.log("savedLayouts: ", layouts)
 
   return (
     <>
-      <button type="button" onClick={handleSaveLayout}>save layout</button>
+      <button type="button" onClick={handleSaveLayout}>Save layout</button>
+      <br />
+      <h3>Layouts</h3>
       <ul>
-        {model && (
-          <>
-            type:  <div>{model.main.type}</div> <br />
-            orientation: <div>{model.main.orientation}</div> <br />
-            <button type="button" onClick={restoreLayout(model)}>restore layout</button>
-          </>
-        )}
+        {layouts.map((_, index) => {
+          return (
+            <li style={{ cursor: 'pointer' }} onClick={restoreLayout(index)}>Layout {index}</li>
+          )
+        })}
       </ul>
 
       <div ref={mainRef} className={"main"} />

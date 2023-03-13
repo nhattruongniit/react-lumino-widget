@@ -8,6 +8,8 @@ const initialState = {
     { type: "WATCHER", id: nanoid(), tabTitle: "Watcher", active: true },
     { type: "INCREMENTOR", id: nanoid(), tabTitle: "Incremenetor", active: true },
   ],
+  activeTab: 2,
+  layout: {}
 };
 
 /**
@@ -29,11 +31,17 @@ export const widgetsSlice = createSlice({
         return w;
       });
     },
+    handleActiveTab: (state, action) => {
+      state.activeTab = action.payload;
+    },
+    handleUpdateLayout: (state, action) => {
+      state.layout[action.payload.tabId] = action.payload.layout;
+    }
   },
 });
 
 // export actions
-export const { addWidget, deleteWidget, activateWidget } = widgetsSlice.actions;
+export const { addWidget, deleteWidget, activateWidget, handleActiveTab, handleUpdateLayout } = widgetsSlice.actions;
 
 /**
  * shorthand for adding an incrementor
