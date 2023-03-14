@@ -45,6 +45,16 @@ class LuminoWidget extends Widget {
     return div;
   }
 
+  onActivateRequest(msg) {
+    // create custom event
+    const event = new CustomEvent("lumino:activated", this.getEventDetails());
+    // fire custom event to parent element
+    this.mainRef?.dispatchEvent(event);
+    // continue with normal Widget behaviour
+    super.onActivateRequest(msg);
+  }
+
+
   /**
    * this event is triggered when the user clicks the close button
    */
@@ -164,6 +174,16 @@ const Lumino = ({ widgets, activeTab, main, dock }) => {
     Widget.attach(main, mainRef.current);
     setAttached(true);
     main.addWidget(dock);
+
+    mainRef.current.addEventListener("lumino:activated", (e) => {
+      // const layout = dock.saveLayout();
+      // console.log('lumino:updated: ', layout)
+      // if(!layout.main) return;
+      // dispatch(handleUpdateLayout({
+      //   layout: layout,
+      //   tabId: activeTab
+      // }))
+    });
 
     mainRef.current.addEventListener("lumino:deleted", (e) => {
       const le = new LuminoWidget().getEventDetails();
