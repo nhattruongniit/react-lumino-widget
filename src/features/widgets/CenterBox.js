@@ -39,19 +39,20 @@ const widgets = {
 
 function CenterBox() {
   const activeTab = useSelector(state => state.widgets.activeTab);
-  const layout = useSelector(state => state.widgets.layout);
   const widgetArrays = widgets[activeTab]
 
   const main = new BoxPanel({ direction: "left-to-right", spacing: 0 });
   const dock = new DockPanel();
 
+
   return (
     <div>
       {widgetArrays.length > 0 && (
         <div key={activeTab}>
-          <Lumino activeTab={activeTab} widgets={widgetArrays} layout={layout} main={main} dock={dock}/>
+          <Lumino activeTab={activeTab} widgets={widgetArrays} main={main} dock={dock} />
         </div>
       )}
+
 
       {/* {widgetArrays.map(widget => (
         <div key={widget.id}>

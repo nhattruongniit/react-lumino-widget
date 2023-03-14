@@ -46,18 +46,6 @@ class LuminoWidget extends Widget {
   }
 
   /**
-   * this event is triggered when we click on the tab of a widget
-   */
-  onActivateRequest(msg) {
-    // create custom event
-    const event = new CustomEvent("lumino:activated", this.getEventDetails());
-    // fire custom event to parent element
-    this.mainRef?.dispatchEvent(event);
-    // continue with normal Widget behaviour
-    super.onActivateRequest(msg);
-  }
-
-  /**
    * this event is triggered when the user clicks the close button
    */
   onCloseRequest(msg) {
@@ -102,14 +90,19 @@ const getComponent = (type) => {
 
 let renderedWidgetIdsRef = {}
 
-const Lumino = ({ widgets, activeTab, layout, main, dock }) => {
+const Lumino = ({ widgets, activeTab, main, dock }) => {
   const [attached, setAttached] = useState(false); // avoid attaching DockPanel and BoxPanel twice
   const mainRef = useRef(null); // reference for Element holding our Widgets
   const [renderedWidgetIds, setRenderedWidgetIds] = useState([]); // tracker of components that have been rendered with LuminoWidget already
   // const widgets = useSelector(selectWidgets); // widgetsState
   const dispatch = useAppDispatch();
+  const layout = useSelector(state => state.widgets.layout);
+
   const model = layout[activeTab];
+
   
+// const main = new BoxPanel({ direction: "left-to-right", spacing: 0 });
+// const dock = new DockPanel();
   /**
    * creates a LuminoWidget and adds it to the DockPanel. Id of widget is added to renderedWidgets
    */
@@ -137,21 +130,23 @@ const Lumino = ({ widgets, activeTab, layout, main, dock }) => {
 
     widgets.forEach((w) => {
       if (renderedWidgetIds.includes(w.id)) return; // avoid drawing widgets twice
+      if (renderedWidgetIdsRef[activeTab] && renderedWidgetIdsRef[activeTab][w.id]) return;
 
       addWidget(w); // addWidget to DOM
       const el = document.getElementById(w.id); // get DIV
       const Component = getComponent(w.type); // get Component for TYPE
       if (el) {
-        ReactDOM.render(
-          // draw Component into Lumino DIV
-          <Provider store={store}>
-              <Component id={w.id} name={w.tabTitle}  />
-          </Provider>,
-          el
-        );
+        // ReactDOM.render(
+        //   // draw Component into Lumino DIV
+        //   <Provider store={store}>
+        //       <Component id={w.id} name={w.tabTitle}  />
+        //   </Provider>,
+        //   el
+        // );
+        <Component id={w.id} name={w.tabTitle}  />
       }
     });
-  }, [widgets, attached, addWidget, renderedWidgetIds, layout, activeTab]);
+  }, [widgets, attached, addWidget, renderedWidgetIds]);
 
   /**
    * This effect initializes the BoxPanel and the Dockpanel and adds event listeners
@@ -169,19 +164,7 @@ const Lumino = ({ widgets, activeTab, layout, main, dock }) => {
     Widget.attach(main, mainRef.current);
     setAttached(true);
     main.addWidget(dock);
-    // dispatch activated action
-    mainRef.current.addEventListener("lumino:activated", () => {
-      // const le = new LuminoWidget().getEventDetails();
-      // dispatch(activateWidget(le.detail.id));
-      // const layout = dock.saveLayout();
-      // console.log('lumino:activated: ', layout)
-      // if(!layout.main) return;
-      // dispatch(handleUpdateLayout({
-      //   layout: layout,
-      //   tabId: activeTab
-      // }))
-    });
-    // dispatch deleted action
+
     mainRef.current.addEventListener("lumino:deleted", (e) => {
       const le = new LuminoWidget().getEventDetails();
       dispatch(deleteWidget(le.detail.id));
@@ -189,21 +172,27 @@ const Lumino = ({ widgets, activeTab, layout, main, dock }) => {
   }, [mainRef, attached, dispatch]);
   
 
-  const restoreLayout = mainLayout => () => {
-    console.log('mainLayout: ', mainLayout)
-    if(!mainLayout?.main) return;
-    dock.restoreLayout(mainLayout);
-  }
+  // const restoreLayout = mainLayout => () => {
+  //   console.log('mainLayout: ', mainLayout)
+  //   if(!mainLayout?.main) return;
+  //   dock.restoreLayout(mainLayout);
+  // }
 
   function handleSaveLayout() {
     const layout = dock.saveLayout();
-    console.log('layout: ', layout)
+    console.log('handleSaveLayout: ', layout)
     if(!layout.main) return;
     dispatch(handleUpdateLayout({
       layout: layout,
       tabId: activeTab
     }))
   }
+
+  useEffect(() => {
+    console.log('useEffect: ', model)
+    if(!model?.main) return;
+    dock.restoreLayout(model);
+  }, [model])
 
   return (
     <>
@@ -213,7 +202,7 @@ const Lumino = ({ widgets, activeTab, layout, main, dock }) => {
           <>
             type:  <div>{model.main.type}</div> <br />
             orientation: <div>{model.main.orientation}</div> <br />
-            <button type="button" onClick={restoreLayout(model)}>restore layout</button>
+            {/* <button type="button" onClick={restoreLayout(model)}>restore layout</button> */}
           </>
         )}
       </ul>
