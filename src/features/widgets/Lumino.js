@@ -146,14 +146,14 @@ const Lumino = ({ widgets, activeTab, main, dock }) => {
       const el = document.getElementById(w.id); // get DIV
       const Component = getComponent(w.type); // get Component for TYPE
       if (el) {
-        // ReactDOM.render(
-        //   // draw Component into Lumino DIV
-        //   <Provider store={store}>
-        //       <Component id={w.id} name={w.tabTitle}  />
-        //   </Provider>,
-        //   el
-        // );
-        <Component id={w.id} name={w.tabTitle}  />
+        ReactDOM.render(
+          // draw Component into Lumino DIV
+          <Provider store={store}>
+              <Component id={w.id} name={w.tabTitle}  />
+          </Provider>,
+          el
+        );
+        // <Component id={w.id} name={w.tabTitle}  />
       }
     });
   }, [widgets, attached, addWidget, renderedWidgetIds]);
