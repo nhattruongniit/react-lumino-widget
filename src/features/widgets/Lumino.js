@@ -98,7 +98,7 @@ const getComponent = (type) => {
 /**
  * Initialize Boxpanel and Dockpanel globally once to handle future calls
  */
-const main = new BoxPanel({ direction: "left-to-right", spacing: 0 });
+const main = new BoxPanel({ direction: "top-to-bottom", spacing: 0 }); // left-to-right
 const dock = new DockPanel();
 
 /**
@@ -119,7 +119,9 @@ const Lumino = () => {
     if (mainRef.current === null) return;
     setRenderedWidgetIds((cur) => [...cur, w.id]);
     const lum = new LuminoWidget(w.id, w.tabTitle, mainRef.current, true);
-    dock.addWidget(lum);
+    dock.addWidget(lum, {
+      mode: w.mode
+    });
   }, []);
 
   /**

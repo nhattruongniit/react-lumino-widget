@@ -10,3 +10,16 @@ body {
   padding: 0;
   overflow: hidden;
 }
+
+/* Lumino interaction cover */
+.lm-BoxPanel:active > *:after {
+  display: block;
+  content: "";
+  z-index: 100000 !important;
+  top: 0px !important;
+  margin-bottom: -10000px !important;
+  width: 100000% !important;
+  height: 100000% !important;
+  opacity: 0.3;
+  background-color: transparent;
+}
