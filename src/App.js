@@ -11,8 +11,6 @@ import Lumino from "./features/widgets/Lumino";
 import MenuBar from "./features/widgets/MenuBar";
 
 import "./App.css";
-import Tabs from "./features/widgets/Tabs";
-import CenterBox from "./features/widgets/CenterBox";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -20,22 +18,17 @@ function App() {
   console.log('giflow')
   return (
     <div className="App">
-      {/* <button onClick={() => dispatch(addIncrementor())}>
+      <button onClick={() => dispatch(addIncrementor())}>
         Add Incrementor!
       </button>
       <button onClick={() => dispatch(addDecrementor())}>
         Add Decrementor!
       </button>
-      <button onClick={() => dispatch(addWatcher())}>Add Watcher!</button> */}
+      <button onClick={() => dispatch(addWatcher())}>Add Watcher!</button>
 
-      {/* <MenuBar /> */}
+      <MenuBar />
 
-      <Tabs />
-
-      <CenterBox />
-
-      {/* <Lumino /> */}
-      {/* <LuminoTony /> */}
+      <Lumino />
     </div>
   );
 }
